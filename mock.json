@@ -1,0 +1,159 @@
+{
+    "users":[
+        {"userId": 1,
+         "name": "Sebastian Cedeno Gonzalez",
+         "email": "a01227809@itesm.mx",
+         "classes": [1,2,3,4,5,6]
+        }
+    ],
+    "services":[
+        {
+            "serviceURL": "classroom",
+            "name": "Google Classroom"
+        },
+        {
+            "serviceURL": "blackboard",
+            "name": "Blackboard"
+        }
+    ],
+    "classes":[
+        {
+            "classId":1,
+            "name": "Desarrollo de Aplicaciones en la Nube",
+            "service": "classroom",
+            "users":[1]
+        },
+        {
+            "classId":2,
+            "name": "Web Application Development Laboratory",
+            "service": "classroom",
+            "users":[1]
+        },
+        {
+            "classId":3,
+            "name": "Advanced Programming",
+            "service": "classroom",
+            "users":[1]
+        },
+        {
+            "classId":4,
+            "name": "Graficas Computacionales",
+            "service": "blackboard",
+            "users":[1]
+        },
+        {
+            "classId":5,
+            "name": "Financial Mathematics",
+            "service": "blackboard",
+            "users":[1]
+        },
+        {
+            "classId":6,
+            "name": "M.C. y Simulacion",
+            "service": "classroom",
+            "users":[1]
+        }
+    ],
+    "tokens":[
+        {
+            "service": "classroom",
+            "user": 1,
+            "accessToken": "tokenClassroomSebastian"
+        },
+        {
+            "service": "blackboard",
+            "user": 1,
+            "accessToken": "tokenBlackboardSebastian"
+        }
+    ],
+    "messages":[
+        {
+            "messageId": 1,
+            "class": 1,
+            "title": "Nuevo Mensaje",
+            "content": "Jóvenes, perdón me equivoqué de liga, esta es la correcta para la clase:\n\nhttps://itesm.zoom.us/my/ceddie.gdl"
+        },
+        {
+            "messageId": 2,
+            "class": 2,
+            "title": "Nuevo Mensaje",
+            "content": "Orden de presentación a las 20:40\n\nBookmart\nCollabnotes\nStayhome\nMusicMatcher\nDeep memes"
+        },
+        {
+            "messageId": 3,
+            "class": 3,
+            "title": "Nuevo Mensaje",
+            "content": "Hi all,\n\nNext Friday (March 6th 11am-12pm) Q&A session for all.\nhttps://meet.google.com/nbp-gedd-vra\n\nRegards,\nObed N Munoz"
+        },
+        {
+            "messageId": 4,
+            "class": 5,
+            "title": "Aula virtual",
+            "content": "Estimado(a) estudiante,\n\nTe compartimos la liga de acceso a tu aula virtual Zoom en donde te encontrarás con tu profesor(a) y tus compañeros(as) de clase:\n\nhttps://itesm.zoom.us/j/6288914632"
+        },
+        {
+            "messageId": 5,
+            "class": 6,
+            "title": "Nuevo Mensaje",
+            "content": "Les comparto el siguiente enlace para asesorías.\nhttps://salvadorhinojosa.youcanbook.me/"
+        }        
+
+    ],
+    "assignments":[
+        {
+            "assignmentId": 1,
+            "title": "Actividad 2 - Sesión 6",
+            "class": 1,
+            "dueDate": "18:30-03-04-2020",
+            "type":"homework",
+            "URL":"https://classroom.google.com/u/1/c/NTE5ODYwODQ2Mjda/a/NTcxMzg3Njg1NDRa/details?hl=es"
+        },
+        {
+            "assignmentId": 2,
+            "title": "Reporte Trabajo de Proyecto #2",
+            "class": 2,
+            "dueDate": "18:30-22-04-2020",
+            "type":"homework",
+            "URL":"https://classroom.google.com/u/1/c/NTE1OTcxNDM5MzNa/a/NzA1NDEwOTQyMTFa/details?hl=es"
+        },
+        {
+            "assignmentId": 3,
+            "title": "Lab - Advanced Logger",
+            "class": 3,
+            "dueDate": "23:59-17-04-2020",
+            "type":"homework",
+            "URL":"https://classroom.google.com/u/1/c/NTE1NTYwOTE3MDla/a/NTE1NTY2Njg4MzVa/details?hl=es"
+        },
+        {
+            "assignmentId": 4,
+            "title": "HW 12",
+            "class": 5,
+            "dueDate": "23:59-19-04-2020",
+            "type":"homework",
+            "URL":"https://miscursos.tec.mx/ultra/courses/_244688_1/cl/outline"
+        },
+        {
+            "assignmentId": 5,
+            "title": "Caso de estudio Markovify",
+            "class": 6,
+            "dueDate": "23:59-14-04-2020",
+            "type":"homework",
+            "URL":"https://classroom.google.com/u/1/c/NTE0OTY2ODk0NDFa/a/Njk3ODc2MDIyMjha/details?hl=es"
+        }
+
+    ],
+    "types": [
+        {
+            "typeId": 1,
+            "name": "homework"
+        },
+        {
+            "typeId": 2,
+            "name": "exam"
+        },
+        {
+            "typeId": 3,
+            "name": "quiz"
+        }
+    ]
+}
