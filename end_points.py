@@ -4,6 +4,7 @@ import os
 import pandas as pd
 import pymysql
 from dotenv import load_dotenv
+import uuid
 from flask import Flask, jsonify, request, abort
 from mock import data
 
@@ -16,6 +17,7 @@ user=os.getenv("USER_PC")
 password=os.getenv("PASS_PC")
 
 conn = pymysql.connect(host, user=user,port=port,passwd=password, db=dbname)
+cur = conn.cursor()
 app = Flask(__name__)
 
 #print(pd.read_sql('show tables;', con=conn))
@@ -141,6 +143,117 @@ def db_get_user_class_message(user_id, class_id,message_id):
     query = 'SELECT M.messageId, M.title, M.content FROM Message M WHERE M.messageId='+str(message_id)+';'
     message = pd.read_sql(query, con=conn).to_json(orient='records')
     return message
+
+#POST user
+@app.route('/user', methods=['POST'])
+def post_user():
+    if not request.json:
+        abort(400)
+    user = {
+        "name": request.json['name'],
+        "email": request.json['email']
+    }
+    if user["name"]==None or user["email"]==None:
+        abort(400)
+    query = 'INSERT INTO User (name,email) VALUES ("'+user["name"]+'","'+user["email"]+'");'
+    cur.execute(query)
+    user_id = cur.lastrowid
+    user["userId"] = user_id
+    conn.commit()
+    return user, 201
+
+#POST user/{id}/services
+@app.route('/user/<int:user_id>/services', methods=['POST'])
+def post_user_service(user_id):
+    if not request.json:
+        abort(400)
+    user = {
+        "service": request.json['service']
+    }
+    if user["service"]==None:
+        abort(400)
+    user_token = str(uuid.uuid4())
+    print(user_token)
+    query = 'INSERT INTO Tokens(serviceId,userId,accessToken) SELECT (SELECT S.serviceId From Services S WHERE S.name="'+user["service"]+'"),'+str(user_id)+',"'+user_token+'" FROM Tokens WHERE NOT EXISTS (SELECT * FROM Tokens WHERE Tokens.userId='+str(user_id)+' AND Tokens.serviceId = (SELECT S.serviceId From Services S WHERE S.name="'+user["service"]+'")) LIMIT 1;'
+    try:
+        cur.execute(query)
+        key_id = cur.lastrowid
+    except:
+        return "Something went wrong, the data received caused an error in the queries"
+    if key_id == 0:
+        return {"duplicate":"Register already exists"}, 201
+    user["userId"] = key_id
+    user["userToken"] = user_token
+    conn.commit()
+    return user, 201
+
+#POST user/{id}/classes
+@app.route('/user/<int:user_id>/classes', methods=['POST'])
+def post_user_class(user_id):
+    if not request.json:
+        abort(400)
+    classR = {
+        "classId": request.json['classId'],
+        "userId": user_id
+    }
+    if classR["classId"]==None:
+        abort(400)
+    query = 'INSERT INTO User_Class(classId, userId) SELECT '+str(classR["classId"])+','+str(classR["userId"])+' From Class WHERE NOT EXISTS (SELECT * FROM User_Class UC WHERE UC.userId='+str(classR["userId"])+' AND UC.classId = '+str(classR["classId"])+') LIMIT 1;'
+    try:
+        cur.execute(query)
+        uc_id = cur.lastrowid
+    except:
+        return "Something went wrong, the data received caused an error in the queries"
+    if uc_id == 0:
+        return {"duplicate":"Register already exists"}, 201
+    classR["ucId"] = uc_id
+    conn.commit()
+    return classR, 201
+
+#POST user/{id}/classes/{class_id}/assignments
+@app.route('/user/<int:user_id>/classes/<int:class_id>/assignments', methods=['POST'])
+def post_user_class_assign(user_id, class_id):
+    if not request.json:
+        abort(400)
+    assignment = {
+        "classId": class_id,
+        "title": request.json['title'],
+        "url": request.json['url'],
+        "typeId": request.json['typeId'],
+        "dueDate": request.json['dueDate'],
+    }
+    if assignment["classId"]==None or assignment["title"]==None or assignment["url"]==None or assignment["typeId"]==None or assignment["dueDate"]==None:
+        abort(400)
+    query = 'INSERT INTO Assignment(title,dueDate,url,typeId,classId) VALUES ("'+assignment["title"]+'","'+assignment["dueDate"]+'","'+assignment["url"]+'",'+str(assignment["typeId"])+','+str(assignment["classId"])+');'
+    try:
+        cur.execute(query)
+        assign_id = cur.lastrowid
+    except:
+        return "Something went wrong, the data received caused an error in the queries"
+    assignment["assignmentId"] = assign_id
+    conn.commit()
+    return assignment, 201
+#POST user/{id}/classes/{class_id}/messages
+@app.route('/user/<int:user_id>/classes/<int:class_id>/messages', methods=['POST'])
+def post_user_class_message(user_id, class_id):
+    if not request.json:
+        abort(400)
+    message = {
+        "classId": class_id,
+        "title": request.json['title'],
+        "content": request.json['content']
+    }
+    if message["classId"]==None or message["title"]==None or message["content"]==None:
+        abort(400)
+    query = 'INSERT INTO Message(title,content,classId) VALUES ("'+message["title"]+'","'+message["content"]+'",'+str(message["classId"])+');'
+    try:
+        cur.execute(query)
+        message_id = cur.lastrowid
+    except:
+        return "Something went wrong, the data received caused an error in the queries"
+    message["messageId"] = message_id
+    conn.commit()
+    return message, 201
 
 if __name__ == '__main__':
     app.run(debug=True) 
