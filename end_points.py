@@ -98,6 +98,50 @@ def get_user_class_message(service, user_id, class_id, message_id):
             break
     return response
 
+#GET user/{id}
+@app.route('/user/<int:user_id>', methods=['GET'])
+def db_get_user(user_id):
+    query = 'select * from User where userId='+str(user_id)+';'
+    user = pd.read_sql(query, con=conn).to_json(orient='records')
+    return user
+#GET user/{id}/services
+@app.route('/user/<int:user_id>/services', methods=['GET'])
+def db_get_user_services(user_id):
+    query = 'SELECT S.name FROM Tokens T JOIN Services S ON S.serviceId=T.serviceId WHERE T.userId = '+str(user_id)+';'
+    services = pd.read_sql(query, con=conn).to_json(orient='records')
+    return services
+
+#GET user/{id}/classes
+@app.route('/user/<int:user_id>/classes', methods=['GET'])
+def db_get_user_classes(user_id):
+    query = 'SELECT C.name FROM User_Class UC JOIN Class C ON C.classId=UC.classId WHERE UC.userId = '+str(user_id)+';'
+    classes = pd.read_sql(query, con=conn).to_json(orient='records')
+    return classes
+#GET user/{id}/classes/{class_id}/assignments
+@app.route('/user/<int:user_id>/classes/<int:class_id>/assignments', methods=['GET'])
+def db_get_user_class_assignments(user_id, class_id):
+    query = 'SELECT A.assignmentId FROM Assignment A WHERE A.classId='+str(class_id)+';'
+    assignments = pd.read_sql(query, con=conn).to_json(orient='records')
+    return assignments
+#GET user/{id}/classes/{class_id}/assignments/{assignment_id}
+@app.route('/user/<int:user_id>/classes/<int:class_id>/assignments/<int:assignment_id>', methods=['GET'])
+def db_get_user_class_assignment(user_id, class_id,assignment_id):
+    query = 'SELECT A.assignmentId, A.title, A.dueDate, A.URL FROM Assignment A WHERE A.assignmentId='+str(assignment_id)+';'
+    assignment = pd.read_sql(query, con=conn).to_json(orient='records')
+    return assignment
+#GET user/{id}/classes/{class_id}/messages
+@app.route('/user/<int:user_id>/classes/<int:class_id>/messages', methods=['GET'])
+def db_get_user_class_messages(user_id, class_id):
+    query = 'SELECT M.messageId FROM Message M WHERE M.classId='+str(class_id)+';'
+    messages = pd.read_sql(query, con=conn).to_json(orient='records')
+    return messages
+#GET user/{id}/classes/{class_id}/messages/{message_id}
+@app.route('/user/<int:user_id>/classes/<int:class_id>/messages/<int:message_id>', methods=['GET'])
+def db_get_user_class_message(user_id, class_id,message_id):
+    query = 'SELECT M.messageId, M.title, M.content FROM Message M WHERE M.messageId='+str(message_id)+';'
+    message = pd.read_sql(query, con=conn).to_json(orient='records')
+    return message
+
 if __name__ == '__main__':
     app.run(debug=True) 
 """
@@ -115,17 +159,6 @@ POST user/{id}/services
 POST user/{id}/classes
 POST user/{id}/classes/{class_id}/assignments
 POST user/{id}/classes/{class_id}/messages
-
-##################################################################
-
-Mock
-
-GET {service_url}/user/{id}
-GET {service_url}/user/{id}/classes
-GET {service_url}/user/{id}/classes/{class_id}/assignments
-GET {service_url}/user/{id}/classes/{class_id}/assignments/{assignment_id}
-GET {service_url}/user/{id}/classes/{class_id}/messages
-GET {service_url}/user/{id}/classes/{class_id}/messages/{message_id}
 
 """
 
